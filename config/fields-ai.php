@@ -17,4 +17,11 @@ return [
         'video_script_intro' => 'Write an engaging introduction for a video script about [topic].',
         'podcast_episode_summary' => 'Summarize the key points of a podcast episode about [topic].',
     ],
+
+    'content_actions' => [
+        'refine' => 'Refine the following text: %s',
+        'expand' => 'Expand on the following text by adding more details, examples, or explanations. Ensure that your response is a continuation of the existing content and forms complete sentences and paragraphs: %s',
+        'shorten' => 'Shorten the following text while maintaining its key points: %s',
+        'translate' => 'Rewrite and translate the following text to Ukrainian with save html structure and original images: %s',
+    ],
 ];

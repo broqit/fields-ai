@@ -1,6 +1,6 @@
 {
     "name": "broqit/fields-ai",
-    "description": "fields-ai is a powerful FilamentPHP plugin that integrates AI-powered features directly into your Filament forms.",
+    "description": "fields-ai is a powerful FilamentPHP plugin that integrates ChatGPT AI-powered features directly into your Filament forms.",
     "keywords": [
         "broqit",
         "fields-ai",
@@ -8,6 +8,7 @@
         "laravel-package",
         "filament-plugin",
         "filamentphp",
+        "chat-gpt",
         "ai-content-generation"
     ],
     "homepage": "https://github.com/broqit/fields-ai",
@@ -45,7 +46,8 @@
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
-            "phpstan/extension-installer": true
+            "phpstan/extension-installer": true,
+            "php-http/discovery": true
         }
     },
     "extra": {

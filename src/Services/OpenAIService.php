@@ -37,5 +37,4 @@ class OpenAIService
             return $result->choices[0]->message->content;
         }
     }
-    
 }

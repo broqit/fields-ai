@@ -3,6 +3,8 @@
 namespace Broqit\FieldsAi;
 
 use Broqit\FilamentEditorJs\Forms\Components\EditorJs;
+use Camya\Filament\Forms\Components\TitleWithSlugInput;
+use Filament\Forms\Components\MarkdownEditor;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Broqit\FieldsAi\Commands\FieldsAiCommand;
@@ -25,6 +27,7 @@ class FieldsAiServiceProvider extends PackageServiceProvider
         $package
             ->name(static::$name)
             ->hasConfigFile()
+            ->hasTranslations()
             ->hasCommand(FieldsAiCommand::class);
     }
 
@@ -36,7 +39,6 @@ class FieldsAiServiceProvider extends PackageServiceProvider
             );
         });
     }
-
     public function packageBooted(): void
     {
         $this->registerWithAIMacro(TextInput::class);
@@ -44,6 +46,7 @@ class FieldsAiServiceProvider extends PackageServiceProvider
         $this->registerWithAIMacro(RichEditor::class);
         $this->registerWithAIMacro(EditorJs::class);
         $this->registerWithAIMacro(TinyEditor::class);
+        $this->registerWithAIMacro(MarkdownEditor::class);
 
         $this->checkDependencies();
     }

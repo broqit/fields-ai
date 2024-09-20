@@ -3,6 +3,8 @@
 namespace Broqit\FieldsAi\Forms\Actions;
 
 use Broqit\FilamentEditorJs\Forms\Components\EditorJs;
+use Durlecode\EJSParser\Parser;
+use Filament\Forms\Components\MarkdownEditor;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use Durlecode\EJSParser\HtmlParser;
 use Filament\Forms\Components\Actions\Action;
@@ -17,12 +19,22 @@ class GenerateContentAction
 {
     public function execute($field, $record, $data, array $options = [])
     {
+        $contentActions = config('fields-ai.content_actions');
+
+        // Створюємо новий масив на базі ключів
+        $formattedActions = array_map(function($key) {
+            return ucfirst($key); // Змінюємо першу літеру на велику
+        }, array_keys($contentActions));
+
+        // Створюємо асоціативний масив, де ключі залишаються ті самі, а значення = ключ з великою першою літерою
+        $formattedActions = array_combine(array_keys($contentActions), $formattedActions);
+
         return Action::make('generateContent')
-            ->label('Generate with AI')
+            ->label(__('fields-ai::form.generate_with_ai'))
             ->icon('heroicon-s-sparkles')
             ->form([
                 Toggle::make('use_existing_content')
-                    ->label('Use existing content')
+                    ->label(__('fields-ai::form.use_existing_content'))
                     ->reactive()
                     ->afterStateUpdated(function ($state, callable $set) {
                         if ($state) {
@@ -33,20 +45,16 @@ class GenerateContentAction
                         }
                     }),
                 Select::make('existing_content_action')
-                    ->label('Action on existing content')
-                    ->options([
-                        'refine' => 'Refine',
-                        'expand' => 'Expand',
-                        'shorten' => 'Shorten',
-                    ])
+                    ->label(__('fields-ai::form.action_on_existing_content'))
+                    ->options($formattedActions)
                     ->visible(fn (callable $get) => $get('use_existing_content'))
                     ->required(fn (callable $get) => $get('use_existing_content')),
                 Textarea::make('ai_prompt')
-                    ->label('Enter your prompt')
+                    ->label(__('fields-ai::form.enter_your_prompt'))
                     ->required()
                     ->visible(fn (callable $get) => !$get('use_existing_content')),
                 Select::make('template')
-                    ->label('Or choose a template')
+                    ->label(__('fields-ai::form.choose_template'))
                     ->options(function () {
                         return app(FieldsAi::class)->getContentTemplates();
                     })
@@ -58,12 +66,12 @@ class GenerateContentAction
                     })
                     ->visible(fn (callable $get) => !$get('use_existing_content')),
             ])
-            ->action(function (array $data) use ($field, $options) {
+            ->action(function (array $data) use ($field, $options, $contentActions) {
                 if (!env('OPENAI_API_KEY')) {
                     Notification::make()
                         ->warning()
-                        ->title('OpenAI API Key Missing')
-                        ->body('Please add your OpenAI API Key to the .env file before proceeding.')
+                        ->title(__('fields-ai::form.openai_api_key_missing'))
+                        ->body(__('fields-ai::form.add_openai_key_to_env'))
                         ->send();
                     return;
                 }
@@ -74,24 +82,20 @@ class GenerateContentAction
                     if ($data['use_existing_content']) {
                         $action = $data['existing_content_action'];
 
-                        switch ($action) {
-                            case 'refine':
-                                $prompt = "Refine the following text: $currentContent";
-                                break;
-                            case 'expand':
-                                $prompt = "Expand on the following text by adding more details, examples, or explanations. Ensure that your response is a continuation of the existing content and forms complete sentences and paragraphs: $currentContent";
-                                break;
-                            case 'shorten':
-                                $prompt = "Shorten the following text while maintaining its key points: $currentContent";
-                                break;
-                            default:
-                                throw new \Exception("Invalid action selected for existing content.");
+                        if (empty($contentActions[$action])) {
+                            throw new \Exception(__('fields-ai::form.invalid_action_for_existing_content'));
                         }
+
+                        if ($field instanceof EditorJs) {
+                            $currentContent = Parser::parse(json_encode($currentContent))->toHtml();
+                        }
+
+                        $prompt = sprintf($contentActions[$action], $currentContent);
                     } else {
                         $prompt = $data['ai_prompt'] ?? null;
 
                         if (empty($prompt)) {
-                            throw new \Exception("Prompt is empty or null. Form data: " . json_encode($data));
+                            throw new \Exception(__('fields-ai::form.prompt_is_empty_or_null') . json_encode($data));
                         }
                     }
 
@@ -101,30 +105,27 @@ class GenerateContentAction
                     // Remove incomplete sentences
                     $generatedContent = $this->removeIncompleteSentences($generatedContent);
 
+                    // Append the new content to the existing content
                     if ($data['use_existing_content'] && $data['existing_content_action'] === 'expand') {
-                        // Append the new content to the existing content
-                        $newContent = $currentContent . "\n\n" . $generatedContent;
-                    } elseif ($data['use_existing_content']) {
-                        // Replace the existing content for 'refine' and 'shorten' actions
+                        $generatedContent = $currentContent . "\n\n" . $generatedContent;
+                    }
+
+                    // Append the new content to the existing content for non-existing content actions
+                    if ($field instanceof RichEditor) {
+                        $newContent = $generatedContent;
+                    } elseif ($field instanceof EditorJs) {
+                        $parser = new HtmlParser($generatedContent);
+                        $blocks = $parser->toBlocks();
+
+                        $newContent = json_decode($blocks, true);
+                    } elseif ($field instanceof MarkdownEditor) {
+                        $newContent = $generatedContent;
+                    } elseif ($field instanceof TinyEditor) {
+                        $newContent = $generatedContent;
+                    } elseif ($field instanceof Textarea) {
                         $newContent = $generatedContent;
                     } else {
-                        // Append the new content to the existing content for non-existing content actions
-                        if ($field instanceof RichEditor) {
-                            $newContent = $generatedContent;
-                        } elseif ($field instanceof EditorJs) {
-                            $parser = new HtmlParser($generatedContent);
-                            $blocks = $parser->toBlocks();
-
-                            dd($generatedContent);
-
-                            $newContent = json_decode($blocks, true);
-                        } elseif ($field instanceof TinyEditor) {
-                            $newContent = $generatedContent;
-                        } elseif ($field instanceof Textarea) {
-                            $newContent = $generatedContent;
-                        } else {
-                            $newContent = trim($currentContent . ' ' . $textInputContent);
-                        }
+                        $newContent = $textInputContent;
                     }
 
                     // Set the new content
@@ -133,21 +134,21 @@ class GenerateContentAction
                     // Notify the user of successful content generation
                     Notification::make()
                         ->success()
-                        ->title('Content Generated Successfully')
-                        ->body('The AI-generated content has been added to the field.')
+                        ->title(__('fields-ai::form.content_generated_successfully'))
+                        ->body(__('fields-ai::form.ai_content_added_to_field'))
                         ->send();
 
                 } catch (\Exception $e) {
                     // Notify the user if an error occurs
                     Notification::make()
                         ->danger()
-                        ->title('Error Generating Content')
-                        ->body('An error occurred while generating content: ' . $e->getMessage())
+                        ->title(__('fields-ai::form.error_generating_content'))
+                        ->body(__('fields-ai::form.error_occurred_while_generating_content') . $e->getMessage())
                         ->send();
                 }
             })
-            ->modalHeading('Generate Content with AI')
-            ->modalButton('Generate');
+            ->modalHeading(__('fields-ai::form.generate_content_with_ai'))
+            ->modalButton(__('fields-ai::form.generate'));
     }
 
     private function removeIncompleteSentences($content)

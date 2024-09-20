@@ -16,8 +16,13 @@ class FieldsAiCommand extends Command
 
         // Publish configuration
         $this->call('vendor:publish', [
-            '--provider' => "Broqit\FieldsAi\FieldsAiServiceProvider",
-            '--tag' => "fields-ai-config"
+            '--provider' => 'Broqit\FieldsAi\FieldsAiServiceProvider',
+            '--tag' => 'fields-ai-config'
+        ]);
+
+        $this->call('vendor:publish', [
+            '--provider' => 'Broqit\FieldsAi\FieldsAiServiceProvider',
+            '--tag' => 'fields-ai-langs'
         ]);
 
         //Create openai-php/laravel Config File
