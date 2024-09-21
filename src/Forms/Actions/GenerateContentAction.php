@@ -62,6 +62,7 @@ class GenerateContentAction
                     })
                     ->visible(fn (callable $get) => !$get('use_existing_content')),
             ])
+            ->after(fn ($livewire) => $livewire->dispatch('fields-ai-content-generate'))
             ->action(function (array $data) use ($field, $options, $contentActions) {
                 if (!env('OPENAI_API_KEY')) {
                     Notification::make()
@@ -98,19 +99,20 @@ class GenerateContentAction
                     $generatedContent = app(FieldsAi::class)->generateContent($prompt, $currentContent, $options);
 
                     $textInputContent = $generatedContent;
+
                     // Remove incomplete sentences
                     $generatedContent = $this->removeIncompleteSentences($generatedContent);
 
                     // Append the new content to the existing content
                     if ($data['use_existing_content'] && $data['existing_content_action'] === 'expand') {
-                        $generatedContent = $currentContent . "\n\n" . $generatedContent;
+                        $generatedContent = $generatedContent;
                     }
 
                     // Append the new content to the existing content for non-existing content actions
                     if ($field instanceof RichEditor) {
                         $newContent = $generatedContent;
                     } elseif ($field instanceof \Broqit\FilamentEditorJs\Forms\Components\EditorJs) {
-                        $parser = new \Durlecode\EJSParser\HtmlParser($generatedContent);
+                        $parser = new \Durlecode\EJSParser\HtmlParser($textInputContent);
                         $blocks = $parser->toBlocks();
 
                         $newContent = json_decode($blocks, true);
@@ -144,7 +146,7 @@ class GenerateContentAction
                 }
             })
             ->modalHeading(__('fields-ai::form.generate_content_with_ai'))
-            ->modalButton(__('fields-ai::form.generate'));
+            ->modalSubmitActionLabel(__('fields-ai::form.generate'));
     }
 
     private function removeIncompleteSentences($content)
