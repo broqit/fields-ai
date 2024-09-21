@@ -90,7 +90,7 @@ class GenerateContentAction
                             $currentContent = Parser::parse(json_encode($currentContent))->toHtml();
                         }
 
-                        $prompt = sprintf($contentActions[$action], $currentContent);
+                        $prompt = $contentActions[$action];
                     } else {
                         $prompt = $data['ai_prompt'] ?? null;
 
@@ -99,7 +99,7 @@ class GenerateContentAction
                         }
                     }
 
-                    $generatedContent = app(FieldsAi::class)->generateContent($prompt, $options);
+                    $generatedContent = app(FieldsAi::class)->generateContent($prompt, $currentContent, $options);
 
                     $textInputContent = $generatedContent;
                     // Remove incomplete sentences
