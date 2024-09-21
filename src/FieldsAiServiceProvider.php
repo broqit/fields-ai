@@ -67,6 +67,7 @@ class FieldsAiServiceProvider extends PackageServiceProvider
             'spatie/laravel-package-tools' => '^1.15.0',
             'filament/filament' => '^3.2',
             'filament/forms' => '^3.0',
+            'masterminds/html5' => '^3.0',
         ];
 
         $missingOrOutdated = [];

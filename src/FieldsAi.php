@@ -6,16 +6,16 @@ use Broqit\FieldsAi\Services\OpenAIService;
 
 class FieldsAi
 {
-    protected $openAIService;
+    protected OpenAIService $openAIService;
 
     public function __construct(OpenAIService $openAIService)
     {
         $this->openAIService = $openAIService;
     }
 
-    public function generateContent(string $prompt, array $options = [])
+    public function generateContent(string $prompt, string $text, array $options = []): string
     {
-        return $this->openAIService->generateContent($prompt, $options);
+        return $this->openAIService->generateContent($prompt, $text, $options);
     }
 
     public function getContentTemplates()
