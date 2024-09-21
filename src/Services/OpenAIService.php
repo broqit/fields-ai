@@ -22,11 +22,11 @@ class OpenAIService
             'temperature' => $temperature,
         ];
 
-        if ($options['max_tokens'] === null) {
+        if (isset($options['max_tokens']) && $options['max_tokens'] === null) {
             unset($params['max_tokens']);
         }
 
-        if ($options['temperature'] === null) {
+        if (isset($options['temperature']) && $options['temperature'] === null) {
             unset($params['temperature']);
         }
 

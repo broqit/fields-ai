@@ -2,11 +2,7 @@
 
 namespace Broqit\FieldsAi\Forms\Actions;
 
-use Broqit\FilamentEditorJs\Forms\Components\EditorJs;
-use Durlecode\EJSParser\Parser;
 use Filament\Forms\Components\MarkdownEditor;
-use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
-use Durlecode\EJSParser\HtmlParser;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Select;
@@ -86,8 +82,8 @@ class GenerateContentAction
                             throw new \Exception(__('fields-ai::form.invalid_action_for_existing_content'));
                         }
 
-                        if ($field instanceof EditorJs) {
-                            $currentContent = Parser::parse(json_encode($currentContent))->toHtml();
+                        if ($field instanceof \Broqit\FilamentEditorJs\Forms\Components\EditorJs) {
+                            $currentContent = \Durlecode\EJSParser\Parser::parse(json_encode($currentContent))->toHtml();
                         }
 
                         $prompt = $contentActions[$action];
@@ -113,14 +109,14 @@ class GenerateContentAction
                     // Append the new content to the existing content for non-existing content actions
                     if ($field instanceof RichEditor) {
                         $newContent = $generatedContent;
-                    } elseif ($field instanceof EditorJs) {
-                        $parser = new HtmlParser($generatedContent);
+                    } elseif ($field instanceof \Broqit\FilamentEditorJs\Forms\Components\EditorJs) {
+                        $parser = new \Durlecode\EJSParser\HtmlParser($generatedContent);
                         $blocks = $parser->toBlocks();
 
                         $newContent = json_decode($blocks, true);
                     } elseif ($field instanceof MarkdownEditor) {
                         $newContent = $generatedContent;
-                    } elseif ($field instanceof TinyEditor) {
+                    } elseif ($field instanceof \Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor) {
                         $newContent = $generatedContent;
                     } elseif ($field instanceof Textarea) {
                         $newContent = $generatedContent;
