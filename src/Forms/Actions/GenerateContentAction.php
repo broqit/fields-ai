@@ -2,12 +2,12 @@
 
 namespace Broqit\FieldsAi\Forms\Actions;
 
-use Filament\Schemas\Components\MarkdownEditor;
-use Filament\Schemas\Components\Actions\Action;
-use Filament\Schemas\Components\Textarea;
-use Filament\Schemas\Components\Select;
-use Filament\Schemas\Components\RichEditor;
-use Filament\Schemas\Components\Toggle;
+use Filament\Forms\Components\MarkdownEditor;
+use Filament\Actions\Action;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Toggle;
 use Broqit\FieldsAi\FieldsAi;
 use Filament\Notifications\Notification;
 
