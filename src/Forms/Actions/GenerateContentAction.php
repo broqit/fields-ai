@@ -118,8 +118,6 @@ class GenerateContentAction
                         $newContent = json_decode($blocks, true);
                     } elseif ($field instanceof MarkdownEditor) {
                         $newContent = $generatedContent;
-                    } elseif ($field instanceof \Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor) {
-                        $newContent = $generatedContent;
                     } elseif ($field instanceof Textarea) {
                         $newContent = $generatedContent;
                     } else {
