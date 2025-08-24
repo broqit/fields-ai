@@ -27,7 +27,6 @@
     "require": {
         "php": "^8.3|^8.4|^8.5",
         "filament/filament": "^4.0",
-        "filament/forms": "^3.0",
         "spatie/laravel-package-tools": "^1.",
         "openai-php/laravel": "^0.10",
         "masterminds/html5": "^2.9"
