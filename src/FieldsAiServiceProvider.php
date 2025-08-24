@@ -16,7 +16,6 @@ use Broqit\FieldsAi\Forms\Actions\GenerateContentAction;
 use Broqit\FieldsAi\Services\OpenAIService;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Illuminate\Support\Facades\Artisan;
-use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class FieldsAiServiceProvider extends PackageServiceProvider
 {
@@ -45,7 +44,6 @@ class FieldsAiServiceProvider extends PackageServiceProvider
         $this->registerWithAIMacro(Textarea::class);
         $this->registerWithAIMacro(RichEditor::class);
         $this->registerWithAIMacro(EditorJs::class);
-        $this->registerWithAIMacro(TinyEditor::class);
         $this->registerWithAIMacro(MarkdownEditor::class);
 
         $this->checkDependencies();
