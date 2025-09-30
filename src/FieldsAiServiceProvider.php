@@ -45,8 +45,6 @@ class FieldsAiServiceProvider extends PackageServiceProvider
         $this->registerWithAIMacro(RichEditor::class);
         $this->registerWithAIMacro(EditorJs::class);
         $this->registerWithAIMacro(MarkdownEditor::class);
-
-        $this->checkDependencies();
     }
 
     protected function registerWithAIMacro(string $componentClass)
@@ -56,36 +54,6 @@ class FieldsAiServiceProvider extends PackageServiceProvider
                 app(GenerateContentAction::class)->execute($this, null, [], $options)
             );
         });
-    }
-
-    protected function checkDependencies(): void
-    {
-        $requiredPackages = [
-            'openai-php/laravel' => '^0.8.1',
-            'spatie/laravel-package-tools' => '^1.15.0',
-            'filament/filament' => '^3.2',
-            'filament/forms' => '^3.0',
-            'masterminds/html5' => '^3.0',
-        ];
-
-        $missingOrOutdated = [];
-
-        foreach ($requiredPackages as $package => $version) {
-            if (!$this->isPackageInstalled($package)) {
-                $missingOrOutdated[] = "{$package} (not installed, requires {$version})";
-            } elseif ($this->needsUpgrade($package, $version)) {
-                $installedVersion = $this->getInstalledVersion($package);
-                $missingOrOutdated[] = "{$package} (installed: {$installedVersion}, requires {$version})";
-            }
-        }
-
-        if (!empty($missingOrOutdated)) {
-            Log::warning('FieldsAi: The following packages are missing or outdated:');
-            foreach ($missingOrOutdated as $package) {
-                Log::warning("- {$package}");
-            }
-            Log::warning('Please install or update these packages for full functionality.');
-        }
     }
 
     protected function isPackageInstalled(string $package): bool
