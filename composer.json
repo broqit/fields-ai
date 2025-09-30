@@ -19,23 +19,23 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Roman Brokunov",
+            "name": "Roman Borkunov",
             "email": "ya.qnut@gmail.com",
             "role": "Developer"
         }
     ],
     "require": {
-        "php": "^8.3|^8.4|^8.5",
+        "php": "^8.3",
         "filament/filament": "^4.0",
-        "spatie/laravel-package-tools": "^1.",
-        "openai-php/laravel": "^0.11|^0.12|^0.13|^0.14|^0.15",
-        "masterminds/html5": "^2.9"
+        "spatie/laravel-package-tools": "^1.92",
+        "openai-php/laravel": "*",
+        "masterminds/html5": "^2.10"
     },
     "require-dev": {
-        "nunomaduro/collision": "^7.9",
-        "pestphp/pest": "^2.1",
-        "pestphp/pest-plugin-arch": "^2.0",
-        "pestphp/pest-plugin-laravel": "^2.0"
+        "nunomaduro/collision": "^8.5",
+        "pestphp/pest": "^2.36",
+        "pestphp/pest-plugin-arch": "^2.7",
+        "pestphp/pest-plugin-laravel": "^2.4"
     },
     "autoload": {
         "psr-4": {
