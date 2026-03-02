@@ -2,24 +2,39 @@
 
 namespace Broqit\FieldsAi;
 
-use Broqit\FieldsAi\Services\OpenAIService;
+use Broqit\FieldsAi\Services\AiService;
 
 class FieldsAi
 {
-    protected OpenAIService $openAIService;
+    protected AiService $aiService;
 
-    public function __construct(OpenAIService $openAIService)
+    public function __construct(AiService $aiService)
     {
-        $this->openAIService = $openAIService;
+        $this->aiService = $aiService;
     }
 
-    public function generateContent(string $prompt, string $text, array $options = []): string
+    public function generateContent(string $prompt, ?string $text = null, array $options = []): string
     {
-        return $this->openAIService->generateContent($prompt, $text, $options);
+        return $this->aiService->generateContent($prompt, $text, $options);
     }
 
     public function getContentTemplates()
     {
         return config('fields-ai.content_templates', []);
+    }
+
+    public function getAvailableProviders(): array
+    {
+        return $this->aiService->getAvailableProviders();
+    }
+
+    public function getAvailableModels(string $provider): array
+    {
+        return $this->aiService->getAvailableModels($provider);
+    }
+
+    public function usedFallback(): bool
+    {
+        return $this->aiService->usedFallback();
     }
 }

@@ -25,9 +25,6 @@ class FieldsAiCommand extends Command
             '--tag' => 'fields-ai-langs'
         ]);
 
-        //Create openai-php/laravel Config File
-        $this->call('openai:install');
-
         // Create storage link
         $this->call('storage:link');
 

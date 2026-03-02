@@ -1,7 +1,16 @@
 <?php
 
 return [
-    'default_model' => 'gpt-4o',
+    // Default AI provider (openai, anthropic, gemini, cohere, groq, xai)
+    'default_provider' => env('AI_DRIVER', 'openai'),
+
+    // Default model for the provider
+    'default_model' => env('AI_MODEL', 'gpt-4o'),
+
+    // Fallback provider if primary fails (optional)
+    'fallback_provider' => env('AI_FALLBACK_DRIVER', null),
+
+    // Default generation parameters
     'default_max_tokens' => 150,
     'default_temperature' => 0.7,
 

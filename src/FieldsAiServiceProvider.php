@@ -13,7 +13,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\RichEditor;
 use Broqit\FieldsAi\Forms\Actions\GenerateContentAction;
-use Broqit\FieldsAi\Services\OpenAIService;
+use Broqit\FieldsAi\Services\AiService;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Illuminate\Support\Facades\Artisan;
 
@@ -34,7 +34,7 @@ class FieldsAiServiceProvider extends PackageServiceProvider
     {
         $this->app->singleton(FieldsAi::class, function ($app) {
             return new FieldsAi(
-                $app->make(OpenAIService::class),
+                $app->make(AiService::class),
             );
         });
     }
